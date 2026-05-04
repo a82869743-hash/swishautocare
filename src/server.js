@@ -6,8 +6,19 @@ require('dotenv').config();
 const app = express();
 
 // Middleware
+const allowedOrigins = [
+  'http://localhost:5173',
+  process.env.BASE_URL
+].filter(Boolean);
+
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
 app.use(express.json({ limit: '10mb' }));
