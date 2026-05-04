@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# Environment variables (contains secrets)
+.env
+
+# MariaDB portable database
+mariadb/
+mariadb.zip
+
+# Uploads (user-generated content)
+uploads/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
