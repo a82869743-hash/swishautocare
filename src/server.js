@@ -8,14 +8,24 @@ const app = express();
 // Middleware
 const allowedOrigins = [
   'http://localhost:5173',
-  process.env.BASE_URL
+  process.env.BASE_URL?.replace(/\/$/, ''),
+  'https://humble-aqua-python.103-108-220-145.cpanel.site'
 ].filter(Boolean);
 
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+    
+    // Check if origin is allowed
+    const isAllowed = allowedOrigins.some(allowed => {
+      return origin.replace(/\/$/, '') === allowed.replace(/\/$/, '');
+    });
+
+    if (isAllowed) {
       callback(null, true);
     } else {
+      console.log('CORS Blocked Origin:', origin);
       callback(new Error('Not allowed by CORS'));
     }
   },
