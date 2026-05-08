@@ -46,8 +46,20 @@ app.use('/api/advance-bookings', require('./routes/advanceBookings'));
 app.use('/api/public', require('./routes/publicTracking'));
 
 // Health check
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+app.get('/api/health', async (req, res) => {
+  let dbStatus = 'disconnected';
+  try {
+    const [rows] = await require('./config/db').query('SELECT 1');
+    if (rows) dbStatus = 'connected';
+  } catch (err) {
+    dbStatus = `error: ${err.message}`;
+  }
+  
+  res.json({ 
+    status: 'ok', 
+    database: dbStatus,
+    timestamp: new Date().toISOString() 
+  });
 });
 
 // Serve frontend static files in production
